@@ -65,3 +65,49 @@ print("\nAfter Cleaning - Missing Values:")
 print(df.isnull().sum())
 
 print("\nData Cleaning Complete!")
+
+
+
+
+# ================================
+# Day 3 - EDA + Analysis
+# ================================
+
+# Continents wali rows hatao (sirf countries chahiye)
+continents = ['World', 'Asia', 'Europe', 'Africa', 'North America',
+              'South America', 'Oceania', 'European Union',
+              'High income', 'Low income', 'Upper middle income',
+              'Lower middle income']
+
+df_countries = df[~df['location'].isin(continents)]
+
+# India ka data check karo
+india_data = df[df['location'] == 'India']
+print("\nIndia Last Row:")
+print(india_data.tail(1)[['location', 'total_cases', 'total_deaths']])
+
+# Latest date ka data lo har country ka
+# Last non-zero value lo har country ka
+latest = df_countries[df_countries['total_cases'] > 0].groupby('location').last().reset_index()
+
+# Top 10 most affected countries by total cases
+top10_cases = latest.nlargest(10, 'total_cases')[['location', 'total_cases']]
+print("Top 10 Countries by Total Cases:")
+print(top10_cases)
+
+# Top 10 countries by total deaths
+top10_deaths = latest.nlargest(10, 'total_deaths')[['location', 'total_deaths']]
+print("\nTop 10 Countries by Total Deaths:")
+print(top10_deaths)
+
+# Death rate calculate karo
+latest['death_rate'] = (latest['total_deaths'] / latest['total_cases']) * 100
+top10_death_rate = latest.nlargest(10, 'death_rate')[['location', 'death_rate']]
+print("\nTop 10 Countries by Death Rate (%):")
+print(top10_death_rate)
+
+# India, USA, Brazil comparison
+countries = ['India', 'United States', 'Brazil']
+comparison = latest[latest['location'].isin(countries)][['location', 'total_cases', 'total_deaths']]
+print("\nIndia vs USA vs Brazil:")
+print(comparison)
