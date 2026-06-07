@@ -111,3 +111,55 @@ countries = ['India', 'United States', 'Brazil']
 comparison = latest[latest['location'].isin(countries)][['location', 'total_cases', 'total_deaths']]
 print("\nIndia vs USA vs Brazil:")
 print(comparison)
+
+
+# ================================
+# Day 4 - Visualizations
+# ================================
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Chart styling set karo
+plt.style.use('seaborn-v0_8')
+
+import os
+os.makedirs('../visuals', exist_ok=True)
+# ---- Chart 1: Line Chart - Daily New Cases ----
+countries_list = ['India', 'United States', 'Brazil']
+df_selected = df_countries[df_countries['location'].isin(countries_list)]
+
+plt.figure(figsize=(12, 6))
+for country in countries_list:
+    data = df_selected[df_selected['location'] == country]
+    plt.plot(data['date'], data['new_cases'], label=country)
+
+plt.title('Daily New COVID-19 Cases - India vs USA vs Brazil')
+plt.xlabel('Date')
+plt.ylabel('New Cases')
+plt.legend()
+plt.tight_layout()
+plt.savefig('../visuals/line_chart.png')
+plt.show()
+print("Line Chart saved!")
+
+# ---- Chart 2: Bar Chart - Top 10 Deaths ----
+plt.figure(figsize=(12, 6))
+sns.barplot(data=top10_deaths, x='total_deaths', y='location', hue='location', palette='Reds_r', legend=False)
+plt.title('Top 10 Countries by Total Deaths')
+plt.xlabel('Total Deaths')
+plt.ylabel('Country')
+plt.tight_layout()
+plt.savefig('../visuals/bar_chart.png')
+plt.show()
+print("Bar Chart saved!")
+
+# ---- Chart 3: Heatmap - Correlation ----
+plt.figure(figsize=(8, 6))
+corr_cols = ['total_cases', 'total_deaths', 'total_vaccinations', 'population']
+sns.heatmap(latest[corr_cols].corr(), annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Heatmap')
+plt.tight_layout()
+plt.savefig('../visuals/heatmap.png')
+plt.show()
+print("Heatmap saved!")
