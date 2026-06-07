@@ -163,3 +163,19 @@ plt.tight_layout()
 plt.savefig('../visuals/heatmap.png')
 plt.show()
 print("Heatmap saved!")
+
+
+# ---- Chart 4: World Map ----
+import plotly.express as px
+
+fig = px.choropleth(
+    latest,
+    locations='location',
+    locationmode='country names',
+    color='total_cases',
+    title='Global COVID-19 Total Cases',
+    color_continuous_scale='Reds'
+)
+fig.show()
+fig.write_html(r'C:\Users\HP\Desktop\covid19-data-analysis\visuals\world_map.html')
+print("World Map saved!")
