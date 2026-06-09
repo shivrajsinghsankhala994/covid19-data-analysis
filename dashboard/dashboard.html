@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Global Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0d1117; color: white; }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #e74c3c;
+        }
+        .header h1 { font-size: 2.5em; color: #e74c3c; }
+        .header p { color: #aaa; margin-top: 10px; }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #e74c3c;
+            border-radius: 10px;
+            padding: 20px 30px;
+            text-align: center;
+            min-width: 200px;
+        }
+        .stat-card h2 { color: #e74c3c; font-size: 2em; }
+        .stat-card p { color: #aaa; margin-top: 5px; }
+
+        .charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 30px;
+        }
+        .chart-box {
+            background: #161b22;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #30363d;
+        }
+        .chart-box h3 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            border-top: 1px solid #30363d;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🦠 COVID-19 Global Dashboard</h1>
+    <p>Analysis of 255 countries | Jan 2020 — Oct 2023 | Data: Our World in Data</p>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <h2>103M+</h2>
+        <p>Highest Cases (USA)</p>
+    </div>
+    <div class="stat-card">
+        <h2>1.13M+</h2>
+        <p>Highest Deaths (USA)</p>
+    </div>
+    <div class="stat-card">
+        <h2>18%</h2>
+        <p>Highest Death Rate (Yemen)</p>
+    </div>
+    <div class="stat-card">
+        <h2>255</h2>
+        <p>Countries Analyzed</p>
+    </div>
+</div>
+
+<div class="charts">
+
+    <!-- Chart 1: Top 10 Cases -->
+    <div class="chart-box">
+        <h3>📊 Top 10 Countries by Total Cases</h3>
+        <div id="barCases"></div>
+    </div>
+
+    <!-- Chart 2: Top 10 Deaths -->
+    <div class="chart-box">
+        <h3>💀 Top 10 Countries by Total Deaths</h3>
+        <div id="barDeaths"></div>
+    </div>
+
+    <!-- Chart 3: Line Chart -->
+    <div class="chart-box full-width">
+        <h3>📈 Daily New Cases — India vs USA vs Brazil</h3>
+        <div id="lineChart"></div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>Built with Python, Pandas, Matplotlib, Seaborn, Plotly | 
+    <a href="https://github.com/shivrajsinghsankhala994/covid19-data-analysis" 
+    style="color:#e74c3c;">GitHub Repository</a></p>
+</div>
+
+<script>
+    // Top 10 Cases Bar Chart
+    var caseData = {
+        x: [103436829, 99315684, 44999588, 38997490, 38437756,
+            37721749, 34571873, 33803572, 26168412, 24779150],
+        y: ['USA', 'China', 'India', 'France', 'Germany',
+            'Brazil', 'South Korea', 'Japan', 'Italy', 'UK'],
+        type: 'bar',
+        orientation: 'h',
+        marker: { color: '#e74c3c' }
+    };
+
+    Plotly.newPlot('barCases', [caseData], {
+        paper_bgcolor: '#161b22',
+        plot_bgcolor: '#161b22',
+        font: { color: 'white' },
+        margin: { l: 100 }
+    });
+
+    // Top 10 Deaths Bar Chart
+    var deathData = {
+        x: [1136920, 704659, 532037, 400102, 334699,
+            230383, 221704, 192013, 174979, 167985],
+        y: ['USA', 'Brazil', 'India', 'Russia', 'Mexico',
+            'UK', 'Peru', 'Italy', 'Germany', 'France'],
+        type: 'bar',
+        orientation: 'h',
+        marker: { color: '#c0392b' }
+    };
+
+    Plotly.newPlot('barDeaths', [deathData], {
+        paper_bgcolor: '#161b22',
+        plot_bgcolor: '#161b22',
+        font: { color: 'white' },
+        margin: { l: 100 }
+    });
+
+    // Line Chart
+    var indiaTrace = {
+        x: ['2020-01', '2020-06', '2021-01', '2021-06', '2022-01', '2022-06', '2023-01'],
+        y: [0, 10000, 15000, 400000, 180000, 15000, 2000],
+        name: 'India',
+        type: 'scatter',
+        line: { color: '#f39c12' }
+    };
+
+    var usaTrace = {
+        x: ['2020-01', '2020-06', '2021-01', '2021-06', '2022-01', '2022-06', '2023-01'],
+        y: [0, 25000, 200000, 100000, 800000, 100000, 50000],
+        name: 'USA',
+        type: 'scatter',
+        line: { color: '#3498db' }
+    };
+
+    var brazilTrace = {
+        x: ['2020-01', '2020-06', '2021-01', '2021-06', '2022-01', '2022-06', '2023-01'],
+        y: [0, 30000, 60000, 80000, 200000, 70000, 10000],
+        name: 'Brazil',
+        type: 'scatter',
+        line: { color: '#2ecc71' }
+    };
+
+    Plotly.newPlot('lineChart', [indiaTrace, usaTrace, brazilTrace], {
+        paper_bgcolor: '#161b22',
+        plot_bgcolor: '#161b22',
+        font: { color: 'white' }
+    });
+</script>
+
+</body>
+</html>
